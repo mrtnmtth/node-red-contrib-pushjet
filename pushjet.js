@@ -72,7 +72,6 @@ module.exports = function(RED) {
         'level'  : level,
         'link'   : link
       };
-      node.log(JSON.stringify(formData));
       request.post('https://' + server + '/message').form(formData)
         .on('response', function(res) {
           var status = res.statusCode;
@@ -82,8 +81,9 @@ module.exports = function(RED) {
           else {
             node.status({fill:"yellow",shape:"dot",text:"Status: "+status});
           }
-          node.log('statusCode: ' + res.statusCode);
-          node.log('headers: ' + JSON.stringify(res.headers));
+          msg.statusCode = res.statusCode;
+          msg.headers = res.headers;
+          node.send(msg);
         })
         .on('error', function(err) {
           node.status({fill:"red",shape:"ring",text:"Connection failed"});

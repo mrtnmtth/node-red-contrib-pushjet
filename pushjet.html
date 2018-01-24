@@ -63,7 +63,7 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('pushjet', {
-        category: 'output',
+        category: 'function',
         color: '#4764ad',
         defaults: {
             name: {value: ""},
@@ -74,9 +74,8 @@
             link: {value: ""}
         },
         inputs: 1,
-        outputs: 0,
+        outputs: 1,
         icon: "pushjet.png",
-        align: "right",
         label: function () {
             return this.name || "pushjet";
         },
