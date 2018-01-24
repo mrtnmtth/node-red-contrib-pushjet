@@ -1,0 +1,83 @@
+<script type="text/x-red" data-template-name="pushjet-service">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-secret"><i class="fa fa-key"></i> Secret</label>
+        <input type="text" id="node-config-input-secret">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-server"><i class="fa fa-globe"></i> Server</label>
+        <input type="text" id="node-config-input-server" placeholder="api.pushjet.io">
+    </div>
+</script>
+
+<script type="text/x-red" data-template-name="pushjet-message">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-service"><i class="fa fa-server"></i> Service</label>
+        <input type="text" id="node-input-service">
+    </div>
+    <div class="form-row">
+        <label for="node-input-message"><i class="fa fa-envelope"></i> Message</label>
+        <input type="text" id="node-input-message">
+    </div>
+    <div class="form-row">
+        <label for="node-input-title"><i class="fa fa-font"></i> Title</label>
+        <input type="text" id="node-input-title">
+    </div>
+    <div class="form-row">
+        <label for="node-input-level"><i class="fa fa-list-ol"></i> Level</label>
+        <input type="text" id="node-input-level">
+    </div>
+    <div class="form-row">
+        <label for="node-input-link"><i class="fa fa-link"></i> Link</label>
+        <input type="text" id="node-input-link">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="pushjet-message">
+    <p>TODO</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('pushjet-service', {
+        category: 'config',
+        defaults: {
+            name: {value: ""},
+            secret: {value: "", required: true},
+            server: {value: "api.pushjet.io", required: true}
+        },
+        label: function () {
+            return this.name || this.secret;
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('pushjet-message', {
+        category: 'function',
+        color: '#4764ad',
+        defaults: {
+            name: {value: ""},
+            service: {value: "", type: "pushjet-service", required: true},
+            message: {value: "", required: true},
+            title: {value: ""},
+            level: {value: ""},
+            link: {value: ""}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "white-globe.png",
+        label: function () {
+            return this.name || "pushjet";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
