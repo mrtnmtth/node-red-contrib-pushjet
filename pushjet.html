@@ -13,7 +13,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-template-name="pushjet-message">
+<script type="text/x-red" data-template-name="pushjet">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name">
@@ -43,7 +43,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="pushjet-message">
+<script type="text/x-red" data-help-name="pushjet">
     <p>TODO</p>
 </script>
 
@@ -62,8 +62,8 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('pushjet-message', {
-        category: 'function',
+    RED.nodes.registerType('pushjet', {
+        category: 'output',
         color: '#4764ad',
         defaults: {
             name: {value: ""},
@@ -74,8 +74,9 @@
             link: {value: ""}
         },
         inputs: 1,
-        outputs: 1,
-        icon: "white-globe.png",
+        outputs: 0,
+        icon: "pushjet.png",
+        align: "right",
         label: function () {
             return this.name || "pushjet";
         },

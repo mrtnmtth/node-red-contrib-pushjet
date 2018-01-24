@@ -89,9 +89,8 @@ module.exports = function(RED) {
           node.status({fill:"red",shape:"ring",text:"Connection failed"});
           node.error("Connection failed [" + err + "]");
         });
-      node.send(msg);
     });
   }
 
-  RED.nodes.registerType("pushjet-message",PushjetMessageNode);
+  RED.nodes.registerType("pushjet",PushjetMessageNode);
 };
