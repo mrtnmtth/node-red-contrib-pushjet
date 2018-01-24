@@ -16,8 +16,15 @@
 
 module.exports = function(RED) {
   var request = require("request");
-  var liburl = require("url");
   var mustache = require("mustache");
+
+  function replaceMustache(str, data) {
+    var isMustacheMsg = (str||"").indexOf("{{") != -1;
+    if (isMustacheMsg) {
+      str = mustache.render(str,data);
+    }
+    return str;
+  }
 
   function PushjetServiceNode(n) {
     RED.nodes.createNode(this,n);
@@ -33,40 +40,58 @@ module.exports = function(RED) {
     var node = this;
 
     var service = RED.nodes.getNode(n.service);
-    var server = service.server;
-    var secret = service.secret;
+    var server  = service.server;
+    var secret  = service.secret;
     var message = n.message;
-    var title = n.title;
-    var level = n.level;
-    var link = n.link;
-    node.log(JSON.stringify(n));
+    var title   = n.title;
+    var level   = n.level;
+    var link    = n.link;
 
-    // TODO: error if protocol in server url
-    /*if (server.indexOf("://") !== -1) {
-    }*/
+    // remove protocol from server url, fail if not https
+    if (server.indexOf("://") !== -1) {
+      if (server.match(/^https/)) {
+        server = server.slice(server.indexOf("://")+3);
+      }
+      else {
+        node.error("Unsupported protocol " +
+          server.slice(0,server.indexOf(":")));
+        node.status({fill:"grey",shape:"dot",text:"disabled"});
+        return;
+      }
+    }
 
     this.on("input",function(msg) {
-      // replace mustache in message
-      var isMustacheMsg = (message||"").indexOf("{{") != -1;
-      if (isMustacheMsg) {
-          message = mustache.render(message,msg);
-      }
+      // replace mustache templates in message, title, link
+      message = replaceMustache(message, msg);
+      title = replaceMustache(title, msg);
+      link = replaceMustache(link, msg);
       var formData = {
         'secret' : secret,
         'message': message,
-        'title': title,
-        'level': level,
-        'link': link
+        'title'  : title,
+        'level'  : level,
+        'link'   : link
       };
       node.log(JSON.stringify(formData));
-      // TODO: error handling
       request.post('https://' + server + '/message').form(formData)
         .on('response', function(res) {
+          var status = res.statusCode;
+          if (status == 200) {
+            node.status({fill:"green",shape:"dot",text:"Status: OK"});
+          }
+          else {
+            node.status({fill:"yellow",shape:"dot",text:"Status: "+status});
+          }
           node.log('statusCode: ' + res.statusCode);
           node.log('headers: ' + JSON.stringify(res.headers));
+        })
+        .on('error', function(err) {
+          node.status({fill:"red",shape:"ring",text:"Connection failed"});
+          node.error("Connection failed [" + err + "]");
         });
       node.send(msg);
     });
+  }
 
   RED.nodes.registerType("pushjet-message",PushjetMessageNode);
-}
+};

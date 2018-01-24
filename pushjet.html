@@ -38,6 +38,9 @@
         <label for="node-input-link"><i class="fa fa-link"></i> Link</label>
         <input type="text" id="node-input-link">
     </div>
+    <div class="form-tips">
+        <span>Tip: Message, Title and Link support mustache templates</span>
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="pushjet-message">
@@ -65,9 +68,9 @@
         defaults: {
             name: {value: ""},
             service: {value: "", type: "pushjet-service", required: true},
-            message: {value: "", required: true},
+            message: {value: "{{payload}}", required: true},
             title: {value: ""},
-            level: {value: ""},
+            level: {value: "", validate:RED.validators.regex(/(^$)|(^[1-5]$)/)},
             link: {value: ""}
         },
         inputs: 1,
