@@ -72,22 +72,38 @@ module.exports = function(RED) {
         'level'  : level,
         'link'   : link
       };
+      msg.payload = [];
+
       request.post('https://' + server + '/message').form(formData)
         .on('response', function(res) {
-          var status = res.statusCode;
-          if (status == 200) {
-            node.status({fill:"green",shape:"dot",text:"Status: OK"});
+          var status = res.statusMessage;
+          if (res.statusCode == 200) {
+            node.status({fill:"green",shape:"dot",text:"Status: "+status});
           }
           else {
             node.status({fill:"yellow",shape:"dot",text:"Status: "+status});
           }
           msg.statusCode = res.statusCode;
           msg.headers = res.headers;
-          node.send(msg);
+        })
+        // data/end handler code based on same handlers in httprequest node
+        // https://github.com/node-red/node-red/blob/master/nodes/core/io/21-httprequest.js
+        .on('data', function(chunk) {
+          msg.payload.push(chunk);
+        })
+        .on('end', function() {
+          // If msg.payload is not an array, error handler has already been
+          // called - so do nothing
+          if (Array.isArray(msg.payload)) {
+            msg.payload = Buffer.concat(msg.payload);
+            node.send(msg);
+          }
         })
         .on('error', function(err) {
           node.status({fill:"red",shape:"ring",text:"Connection failed"});
           node.error("Connection failed [" + err + "]");
+          msg.payload = err.toString();
+          node.send(msg);
         });
     });
   }
