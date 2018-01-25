@@ -42,10 +42,6 @@ module.exports = function(RED) {
     var service = RED.nodes.getNode(n.service);
     var server  = service.server;
     var secret  = service.secret;
-    var message = n.message;
-    var title   = n.title;
-    var level   = n.level;
-    var link    = n.link;
 
     // remove protocol from server url, fail if not https
     if (server.indexOf("://") !== -1) {
@@ -61,6 +57,11 @@ module.exports = function(RED) {
     }
 
     this.on("input",function(msg) {
+      var message = n.message;
+      var title   = n.title;
+      var level   = n.level;
+      var link    = n.link;
+
       // replace mustache templates in message, title, link
       message = replaceMustache(message, msg);
       title = replaceMustache(title, msg);
