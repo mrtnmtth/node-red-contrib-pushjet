@@ -39,7 +39,8 @@
         <input type="text" id="node-input-link">
     </div>
     <div class="form-tips">
-        <span>Tip: Message, Title and Link support mustache templates</span>
+        <span><b>Tip:</b> Message, Title and Link support mustache templates.<br /><br />
+        Mustache variables are HTML-escaped by default. If you want to return unescaped HTML, use the triple mustache: <code>{{{name}}}</code>.</span>
     </div>
 </script>
 
@@ -68,7 +69,7 @@
         defaults: {
             name: {value: ""},
             service: {value: "", type: "pushjet-service", required: true},
-            message: {value: "{{payload}}", required: true},
+            message: {value: "{{{payload}}}", required: true},
             title: {value: ""},
             level: {value: "", validate:RED.validators.regex(/(^$)|(^[1-5]$)/)},
             link: {value: ""}
