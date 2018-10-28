@@ -3,8 +3,8 @@
     "version"      : "0.0.5",
     "description"  : "Node-RED node for sending messages to the Pushjet API.",
     "dependencies": {
-        "mustache": "2.3.0",
-        "request": "2.83.0"
+        "mustache": "~2.3.2",
+        "request": "^2.88.0"
     },
     "keywords": [ "node-red", "pushjet" ],
     "license": "Apache-2.0",
